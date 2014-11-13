@@ -8,6 +8,7 @@ int main(int argc, char* argvp[])
 	test_one();
 	test_two();
 	test_three();
+	test_four();
 
 	return 0;
 }
@@ -71,6 +72,41 @@ void test_three()
 	assert(result == 22);
 }
 #pragma GCC diagnostic pop
+
+// ISO C forbids nested functions. I really insist this is wrong.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+void test_four()
+{
+	int values[] = {1,2,3,4,5,6,7,8,9};
+	int length = 9;
+	int scale_factor = 2;
+	int (*fun) (int a) = ({
+		int scale(int a)
+		{
+			return a * scale_factor;
+		} scale;
+	});
+
+	map(fun, values, length);
+
+	printf("Results: {");
+	int expected_result[] = {2,4,6,8,10,12,14,16,18};
+	for(int i = 0; i < length - 1; i++){
+		printf("%d, ", values[i]);
+		assert(expected_result[i] == values[i]);
+	}
+	assert(expected_result[length - 1] == values[length - 1]);
+	printf("%d}\n", values[length - 1]);
+}
+#pragma GCC diagnostic pop
+
+
+void map(int (*function)(int value), int values[], int length)
+{
+	for(int i = 0; i < length; i++)
+		values[i] = function(values[i]);
+}
 
 int sum(int a, int b, int c) {
 	return a + b + c;

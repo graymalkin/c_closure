@@ -15,6 +15,9 @@ int main(int argc, char* argvp[]);
 void test_one();
 void test_two();
 void test_three();
+void test_four();
+
+void map(int (*function)(int value), int values[], int length);
 int sum(int a, int b, int c);
 
 #endif 
