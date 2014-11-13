@@ -4,7 +4,7 @@ all: clean closure
 
 build: closure
 
-closure: closure.o tcp.o test.o
+closure: closure.o
 	gcc $(build_flags) bin/closure.o -o closure
 
 closure.o: src/closure.c
