@@ -81,15 +81,17 @@ void test_four()
 	int values[] = {1,2,3,4,5,6,7,8,9};
 	int length = 9;
 	int scale_factor = 2;
-	int (*fun) (int a) = ({
-		int scale(int a)
+	void (*fun) (int *a) = ({
+		void scale(int *a)
 		{
-			return a * scale_factor;
+			(*a) = (*a) * scale_factor;
 		} scale;
 	});
 
+	// Map our closure against the array of values
 	map(fun, values, length);
 
+	// Print out the results, and assert them against the expected results
 	printf("Results: {");
 	int expected_result[] = {2,4,6,8,10,12,14,16,18};
 	for(int i = 0; i < length - 1; i++){
@@ -101,11 +103,10 @@ void test_four()
 }
 #pragma GCC diagnostic pop
 
-
-void map(int (*function)(int value), int values[], int length)
+void map(void (*function)(int *value), int values[], int length)
 {
 	for(int i = 0; i < length; i++)
-		values[i] = function(values[i]);
+		function(&values[i]);
 }
 
 int sum(int a, int b, int c) {
