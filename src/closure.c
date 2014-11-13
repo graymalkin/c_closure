@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include "closure.h"
 
@@ -80,7 +82,13 @@ void test_four()
 {
 	int values[] = {1,2,3,4,5,6,7,8,9};
 	int length = 9;
-	int scale_factor = 2;
+
+	// Generate a random scale factor to prevent the compiler trying to optimise
+	//  a constant out.
+	srand(time(NULL));
+	int scale_factor = rand() % 10;
+
+
 	void (*fun) (int *a) = ({
 		void scale(int *a)
 		{
@@ -93,13 +101,17 @@ void test_four()
 
 	// Print out the results, and assert them against the expected results
 	printf("Results: {");
-	int expected_result[] = {2,4,6,8,10,12,14,16,18};
+	int expected_result[] = {1 * scale_factor, 2 * scale_factor,
+							 3 * scale_factor, 4 * scale_factor,
+							 5 * scale_factor, 6 * scale_factor,
+							 7 * scale_factor, 8 * scale_factor,
+							 9 * scale_factor};
 	for(int i = 0; i < length - 1; i++){
 		printf("%d, ", values[i]);
 		assert(expected_result[i] == values[i]);
 	}
 	assert(expected_result[length - 1] == values[length - 1]);
-	printf("%d}\n", values[length - 1]);
+	printf("%d} (scale_factor: %d)\n", values[length - 1], scale_factor);
 }
 #pragma GCC diagnostic pop
 
