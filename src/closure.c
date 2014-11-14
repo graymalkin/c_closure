@@ -11,7 +11,8 @@ int main(int argc, char* argvp[])
 	test_two();
 	test_three();
 	test_four();
-
+	test_five_1();
+	
 	return 0;
 }
 
@@ -114,6 +115,33 @@ void test_four()
 	printf("%d} (scale_factor: %d)\n", values[length - 1], scale_factor);
 }
 #pragma GCC diagnostic pop
+
+// ISO C forbids nested functions. I really insist this is wrong.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+void test_five_1()
+{
+	closure_strict k;
+	k.x = 9;
+	k.y = 12;
+	int value = 1;
+	int (*fun) (int a, int b) = ({
+		int sum_inline(int a, int b) 
+		{ 
+			return a + b + value;
+		} sum_inline; 
+	});
+	k.f = fun;
+	test_five_2(k);
+}
+#pragma GCC diagnostic pop
+
+void test_five_2(closure_strict clj)
+{	
+	int result = clj.f(clj.x, clj.y);
+	printf("Result: %d\n", result);
+	assert(result == 22);
+}
 
 void map(void (*function)(int *value), int values[], int length)
 {

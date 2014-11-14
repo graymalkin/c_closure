@@ -16,6 +16,8 @@ void test_one();
 void test_two();
 void test_three();
 void test_four();
+void test_five_1();
+void test_five_2(closure_strict clj);
 
 void map(void (*function)(int *value), int values[], int length);
 int sum(int a, int b, int c);
